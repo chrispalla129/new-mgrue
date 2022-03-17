@@ -34,7 +34,8 @@ class Backend(QObject):
 # Define our backend object, which we pass to QML.
 backend = Backend()
 
-engine.rootObjects()[0].setProperty('backend', backend)
+# Crashes most of the time, unsure why.
+#engine.rootObjects()[0].setProperty('backend', backend)
 
 backend.update_time()
 

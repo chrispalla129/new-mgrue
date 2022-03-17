@@ -27,6 +27,15 @@ ApplicationWindow {
             fillMode: Image.PreserveAspectCrop
         }
 
+        Button {
+            text: "Select File"
+            width: 200
+            height: 50
+            x: parent.width / 2 - width / 2         //Centers the x-axis
+            y: parent.height / 2 - height / 2       //Centers the y-axis
+            onClicked: fileDialog.visible = true    //Opens file dialog on clikc
+        }
+
         Rectangle {
             anchors.fill: parent
             color: "transparent"
@@ -46,25 +55,27 @@ ApplicationWindow {
 
         FileDialog {
             id: fileDialog
+            visible: false
             title: "Please choose desired folder location"
             folder: shortcuts.home
             selectFolder: true
             onAccepted: {
                 console.log("You chose: " + fileDialog.fileUrls)
-                folderLocation = fileDialog.fileUrls
+                location.text = fileDialog.fileUrls[0]
                 close()
             }
             onRejected: {
                 console.log("Canceled")
                 close()
             }
-            Component.onCompleted: visible = true
         }
         Rectangle {
+            id: fileLocation
             anchors.fill: parent
             color: "transparent"
 
             Text {
+                id: location
                 anchors {
                     bottom: parent.bottom
                     bottomMargin: 12
