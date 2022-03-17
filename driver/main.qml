@@ -28,12 +28,12 @@ ApplicationWindow {
         }
 
         Button {
-            text: "Select File"
+            text: "Select Folder"
             width: 200
             height: 50
             x: parent.width / 2 - width / 2         //Centers the x-axis
             y: parent.height / 2 - height / 2       //Centers the y-axis
-            onClicked: fileDialog.visible = true    //Opens file dialog on clikc
+            onClicked: fileDialog.visible = true    //Opens file dialog on click
         }
 
         Rectangle {
