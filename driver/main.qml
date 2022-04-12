@@ -8,6 +8,7 @@ ApplicationWindow {
     height: 600
     title: "mGRUE"
     property string currTime: "00:00:00"
+    property string fileName: ""
     property QtObject backend
 
     Connections {
@@ -62,6 +63,7 @@ ApplicationWindow {
             onAccepted: {
                 console.log("You chose: " + fileDialog.fileUrls)
                 location.text = fileDialog.fileUrls[0]
+                fileName = fileDialog.fileUrls[0]
                 close()
             }
             onRejected: {
