@@ -13,7 +13,6 @@ ApplicationWindow {
 
     Connections {
         target: backend
-
         function onUpdated(msg) {
         currTime = msg;
         }
@@ -61,13 +60,13 @@ ApplicationWindow {
             folder: shortcuts.home
             selectFolder: true
             onAccepted: {
-                console.log("You chose: " + fileDialog.fileUrls)
+                backend.getFileLocation(fileDialog.fileUrls)
                 location.text = fileDialog.fileUrls[0]
                 fileName = fileDialog.fileUrls[0]
                 close()
             }
             onRejected: {
-                console.log("Canceled")
+                console.log("File selection canceled by user")
                 close()
             }
         }

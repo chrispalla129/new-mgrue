@@ -2,7 +2,7 @@ import sys
 
 from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
-from PySide2.QtCore import QTimer, QObject, Signal
+from PySide2.QtCore import QObject, Slot, Signal, QTimer
 
 from time import strftime, localtime
 import serial
@@ -11,14 +11,8 @@ import serial
 global fileCounter
 fileCounter = 0
 
-app = QGuiApplication(sys.argv)
 
-engine = QQmlApplicationEngine()
-engine.quit.connect(app.quit)
-engine.load('main.qml')
-
-
-
+# Define our backend object, which we will pass to the engine object
 class Backend(QObject):
 
     updated = Signal(str, arguments=['time'])
@@ -31,31 +25,43 @@ class Backend(QObject):
         self.timer.setInterval(100)  # msecs 100 = 1/10th sec
         self.timer.timeout.connect(self.update_time)
         self.timer.start()
+        self.destination_folder = ""
 
     def update_time(self):
         # Pass the current time to QML.
         curr_time = strftime("%H:%M:%S", localtime())
         self.updated.emit(curr_time)
 
-    # with serial.Serial('COM1', 19200, timeout=1) as ser:
-    #     bytesMessage = ser.readline()           # read a '\n' terminated line
-    #     bytesMessage += ser.readline()          # Reads data & metadata
-    #     message = bytesMessage.decode("utf-8")  # convert bytes to string
+    @Slot(str)
+    def getFileLocation(self, location):
+        print("User selected: " + location)
+        self.destination_folder = location
 
-    #     #Writes to a new file, increments fileCounter
-    #     file = open(backend.fileName + "/test_" + str(fileCounter) + ".fn", "a")
-    #     file.write(message)
-    #     file.close()
-    #     fileCounter += 1
+    def readSerial(self):
+        with serial.Serial('COM1', 19200, timeout=1) as ser:
+            bytesMessage = ser.readline()           # read a '\n' terminated line
+            bytesMessage += ser.readline()          # Reads data & metadata
+            message = bytesMessage.decode("utf-8")  # convert bytes to string
+
+            #Writes to a new file, increments fileCounter
+            file = open(self.destination_folder + "/test_" + str(fileCounter) + ".fn", "a")
+            file.write(message)
+            file.close()
+            fileCounter += 1
 
 
-# Crashes most of the time, unsure why.
-# engine.rootObjects()[0].setProperty('backend', backend)
+if __name__ == '__main__':
+    app = QGuiApplication(sys.argv)
+    engine = QQmlApplicationEngine()
 
-# Define our backend object, which we pass to QML.
-backend = Backend()
+    # Load QML file
+    engine.load('main.qml')
+    engine.quit.connect(app.quit)
 
+    # Get QML File context
+    backend = Backend()
+    engine.rootObjects()[0].setProperty('backend', backend)
+    backend.update_time()
 
-backend.update_time()
+    sys.exit(app.exec_())
 
-sys.exit(app.exec_())
