@@ -13,6 +13,7 @@ fileCounter = 0
 class Backend(QObject):
 
     updated = Signal(str, arguments=['time'])
+    status = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -31,30 +32,37 @@ class Backend(QObject):
         curr_time = strftime("%H:%M:%S", localtime())
         self.updated.emit(curr_time)
 
+    def update_status(self, msg):
+        # Pass the current status message to QML.
+        self.status.emit(msg)
+
     # This function is getting data from frontend
     @Slot(str)
     def getFileLocation(self, location):
         print("User selected: " + location)
         self.destination_folder = location
 
-    def readSerial(self): 
+    def readSerial(self):
         with serial.Serial('COM1', 19200, timeout=1) as ser:
+            self.update_status("Awaiting Connection")
             if (ser.inWaiting() > 0):
-                bytesMessage = ser.readline()           # read a '\n' terminated line
+                bytesMessage = ser.readline().decode()   # read a '\n' terminated line
 
                 if bytesMessage == 'connect':
                     ser.write(b'handshake')
+                    self.update_status("Device Connected")
 
                     if (ser.inWaiting() > 0):
-                        bytesMessage = ser.readline()
+                        bytesMessage = ser.readline().decode()
 
-                        if bytesMessage == 'transfer':
+                        if bytesMessage == 'transfer' and self.destination_folder != "":
+                            self.update_status("Data transfer in progress....")
                             file = open(self.destination_folder + "/test_" + str(fileCounter) + ".fn", "w")
                             sequenceNum = 0
-                            nextLine = ser.readline()
+                            nextLine = ser.readline().decode()
                             while nextLine != '\n':
                                 meta = nextLine
-                                sequence = ser.readline()
+                                sequence = ser.readline().decode()
                                 file.write(meta)
                                 file.write(sequence)
                                 sequenceNum += 1
@@ -65,11 +73,13 @@ class Backend(QObject):
                                     sequenceNum = 0
                                     file = open(self.destination_folder + "/test_" + str(fileCounter) + ".fn", "w")
 
-                                nextLine = ser.readline
+                                nextLine = ser.readline().decode()
+                            self.update_status("Data transfer complete! Awaiting new action...")
                                 
 
                         if bytesMessage == 'new_rate':
-                            newBaud = ser.readline()
+                            newBaud = ser.readline().decode()
+                            self.update_status("Baud rate updated to " + newBaud)
                             ser.setBaudrate(newBaud)
 
 

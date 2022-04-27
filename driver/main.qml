@@ -10,12 +10,16 @@ Window {
     title: "mGRUE"
     property string currTime: "00:00:00"
     property string fileName: ""
+    property string statusMessage: ""
     property QtObject backend
 
     Connections {
         target: backend
         function onUpdated(msg) {
         currTime = msg;
+        }
+        function onStatus(msg) {
+        statusMessage = msg;
         }
     }
 
@@ -26,6 +30,25 @@ Window {
             anchors.fill: parent
             source: "./images/green_background.jpg"
             fillMode: Image.PreserveAspectCrop
+        }
+
+        Rectangle {
+            id: messageSection
+            anchors.fill: parent
+            color: "transparent"
+
+            Text {
+                id: messages
+                anchors {
+                    top: parent.top
+                    bottomMargin: 12
+                    left: parent.left
+                    leftMargin: 12
+                }
+                text: statusMessage
+                font.pixelSize: 24
+                color: "white"
+            }
         }
 
         Button {
