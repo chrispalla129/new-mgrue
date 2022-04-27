@@ -1,8 +1,9 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Dialogs 1.0
+import QtQuick.Window 2.1
 
-ApplicationWindow {
+Window {
     visible: true
     width: 800
     height: 600
@@ -90,3 +91,8 @@ ApplicationWindow {
         }
     }
 }
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}D{i:1}D{i:3}D{i:4}D{i:5}D{i:7}D{i:8}D{i:2}
+}
+##^##*/
