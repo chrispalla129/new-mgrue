@@ -7,11 +7,8 @@ from PySide2.QtCore import QObject, Slot, Signal, QTimer
 from time import strftime, localtime
 import serial
 
-
 global fileCounter
 fileCounter = 0
-
-
 # Define our backend object, which we will pass to the engine object
 class Backend(QObject):
 
@@ -25,29 +22,55 @@ class Backend(QObject):
         self.timer.setInterval(100)  # msecs 100 = 1/10th sec
         self.timer.timeout.connect(self.update_time)
         self.timer.start()
+
         self.destination_folder = ""
 
+    # This function is sending data to the frontend (uses the updated signal)
     def update_time(self):
         # Pass the current time to QML.
         curr_time = strftime("%H:%M:%S", localtime())
         self.updated.emit(curr_time)
 
+    # This function is getting data from frontend
     @Slot(str)
     def getFileLocation(self, location):
         print("User selected: " + location)
         self.destination_folder = location
 
-    def readSerial(self):
+    def readSerial(self): 
         with serial.Serial('COM1', 19200, timeout=1) as ser:
-            bytesMessage = ser.readline()           # read a '\n' terminated line
-            bytesMessage += ser.readline()          # Reads data & metadata
-            message = bytesMessage.decode("utf-8")  # convert bytes to string
+            if (ser.inWaiting() > 0):
+                bytesMessage = ser.readline()           # read a '\n' terminated line
 
-            #Writes to a new file, increments fileCounter
-            file = open(self.destination_folder + "/test_" + str(fileCounter) + ".fn", "a")
-            file.write(message)
-            file.close()
-            fileCounter += 1
+                if bytesMessage == 'connect':
+                    ser.write(b'handshake')
+
+                    if (ser.inWaiting() > 0):
+                        bytesMessage = ser.readline()
+
+                        if bytesMessage == 'transfer':
+                            file = open(self.destination_folder + "/test_" + str(fileCounter) + ".fn", "w")
+                            sequenceNum = 0
+                            nextLine = ser.readline()
+                            while nextLine != '\n':
+                                meta = nextLine
+                                sequence = ser.readline()
+                                file.write(meta)
+                                file.write(sequence)
+                                sequenceNum += 1
+
+                                if sequenceNum == 4000:
+                                    file.close()
+                                    fileCounter += 1
+                                    sequenceNum = 0
+                                    file = open(self.destination_folder + "/test_" + str(fileCounter) + ".fn", "w")
+
+                                nextLine = ser.readline
+                                
+
+                        if bytesMessage == 'new_rate':
+                            newBaud = ser.readline()
+                            ser.setBaudrate(newBaud)
 
 
 if __name__ == '__main__':
@@ -62,6 +85,7 @@ if __name__ == '__main__':
     backend = Backend()
     engine.rootObjects()[0].setProperty('backend', backend)
     backend.update_time()
+    backend.readSerial()
 
     sys.exit(app.exec_())
 
