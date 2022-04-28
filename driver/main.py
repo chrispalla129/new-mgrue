@@ -85,6 +85,12 @@ class Backend(QObject):
 
 if __name__ == '__main__':
     app = QGuiApplication(sys.argv)
+
+    # Added to avoid runtime warnings
+    app.setOrganizationName("Some Company")
+    app.setOrganizationDomain("somecompany.com")
+    app.setApplicationName("Amazing Application")
+
     engine = QQmlApplicationEngine()
 
     # Load QML file

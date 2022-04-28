@@ -48,14 +48,7 @@ Window {
             }
         }
 
-        RoundButton {
-            text: "Select Folder"
-            width: 200
-            height: 50
-            x: parent.width / 2 - width / 2         //Centers the x-axis
-            y: parent.height / 2 - height / 2       //Centers the y-axis
-            onClicked: fileDialog.visible = true    //Opens file dialog on click
-        }
+        
 
         Rectangle {
             anchors.fill: parent
@@ -96,12 +89,35 @@ Window {
             anchors.fill: parent
             color: "transparent"
 
+            Button {
+            id: selectButton
+            text: "Select Folder"
+            
+            anchors {
+                top: parent.verticalCenter
+                right: parent.right
+            }
+            contentItem: Text {
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text: selectButton.text
+                color: "lightsteelblue"
+            }
+            background: Rectangle {
+                implicitWidth: 200
+                implicitHeight: 50
+                color: "black"
+                radius: 8
+            }
+            onClicked: fileDialog.visible = true    //Opens file dialog on click
+        }
+
             Text {
                 id: location
                 anchors {
-                    bottom: parent.bottom
-                    bottomMargin: 12
-                    left: parent.left
+                    top: selectButton.bottom
+                    topMargin: 12
+                    left: selectButton.left
                     leftMargin: 12
                 }
                 text: "destination folder"  // display current destination
