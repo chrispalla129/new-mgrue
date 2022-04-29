@@ -5,9 +5,10 @@ import QtQuick.Window 2.1
 
 Window {
     visible: true
-    width: 800
-    height: 600
+    width: 600
+    height: 500
     title: "mGRUE"
+    color: "lightslategrey"
     property string fileName: ""
     property string statusMessage: ""
     property QtObject backend
@@ -20,9 +21,20 @@ Window {
     }
 
     Rectangle {
-        id: background
+        id: title
         anchors.fill: parent
-        color: "lightslategrey"
+        color: "transparent"
+        Text {
+            text: "mGRUE Host Device Driver"
+            font.pixelSize: 40
+            color: "#36454F"
+            anchors {
+                top: parent.top
+                horizontalCenter: parent.horizontalCenter
+                topMargin: 12
+            }
+
+        }
 
 
         Rectangle {
@@ -33,14 +45,14 @@ Window {
             Text {
                 id: messages
                 anchors {
-                    top: parent.top
+                    bottom: parent.bottom
                     bottomMargin: 12
                     left: parent.left
                     leftMargin: 12
                 }
-                text: statusMessage
+                text: "Status: " + statusMessage
                 font.pixelSize: 24
-                color: "white"
+                color: "oldlace"
             }
         }
 
@@ -71,10 +83,7 @@ Window {
             id: selectButton
             text: "Select Folder"
             
-            anchors {
-                top: parent.verticalCenter
-                right: parent.right
-            }
+            anchors.centerIn: parent
             contentItem: Text {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -84,7 +93,7 @@ Window {
             background: Rectangle {
                 implicitWidth: 200
                 implicitHeight: 50
-                color: "black"
+                color: "#36454F"
                 radius: 8
             }
             onClicked: fileDialog.visible = true    //Opens file dialog on click
@@ -100,7 +109,7 @@ Window {
                 }
                 text: "destination folder"  // display current destination
                 font.pixelSize: 24
-                color: "white"
+                color: "oldlace"
             }
         }
     }
