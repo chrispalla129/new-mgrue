@@ -26,6 +26,7 @@ Window {
         color: "transparent"
         Text {
             text: "mGRUE Host Device Driver"
+            font.family: "Yu Gothic UI Semibold"
             font.pixelSize: 40
             color: "#36454F"
             anchors {
@@ -52,6 +53,7 @@ Window {
                 }
                 text: "Status: " + statusMessage
                 font.pixelSize: 24
+                font.family: "Yu Gothic UI Semilight"
                 color: "oldlace"
             }
         }
@@ -82,13 +84,14 @@ Window {
             Button {
             id: selectButton
             text: "Select Folder"
+            font.family: "Yu Gothic UI Semilight"
             
             anchors.centerIn: parent
             contentItem: Text {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 text: selectButton.text
-                color: "lightsteelblue"
+                color: "oldlace"
             }
             background: Rectangle {
                 implicitWidth: 200
@@ -104,11 +107,11 @@ Window {
                 anchors {
                     top: selectButton.bottom
                     topMargin: 12
-                    left: selectButton.left
-                    leftMargin: 12
+                    horizontalCenter: selectButton.horizontalCenter
                 }
                 text: "destination folder"  // display current destination
-                font.pixelSize: 24
+                font.pixelSize: 20
+                font.family: "Yu Gothic UI Semilight"
                 color: "oldlace"
             }
         }
@@ -116,7 +119,6 @@ Window {
 }
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.33}D{i:1}D{i:4}D{i:3}D{i:5}D{i:7}D{i:6}D{i:8}D{i:10}D{i:9}
-D{i:2}
+    D{i:0;formeditorZoom:0.9}D{i:1}D{i:3}D{i:5}D{i:4}D{i:6}D{i:8}D{i:11}D{i:7}D{i:2}
 }
 ##^##*/
