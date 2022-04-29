@@ -8,18 +8,14 @@ Window {
     width: 800
     height: 600
     title: "mGRUE"
-    property string currTime: "00:00:00"
     property string fileName: ""
     property string statusMessage: ""
     property QtObject backend
 
     Connections {
         target: backend
-        function onUpdated(msg) {
-        currTime = msg;
-        }
         function onStatus(msg) {
-        statusMessage = msg;
+            statusMessage = msg;
         }
     }
 
@@ -48,24 +44,6 @@ Window {
             }
         }
 
-        
-
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
-
-            Text {
-                anchors {
-                    bottom: parent.bottom
-                    bottomMargin: 12
-                    right: parent.right
-                    rightMargin: 12
-                }
-                text: currTime  // display current time
-                font.pixelSize: 24
-                color: "white"
-            }
-        }
 
         FileDialog {
             id: fileDialog

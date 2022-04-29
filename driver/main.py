@@ -18,20 +18,9 @@ class Backend(QObject):
     def __init__(self):
         super().__init__()
 
-        # Define timer.
-        self.timer = QTimer()
-        self.timer.setInterval(100)  # msecs 100 = 1/10th sec
-        self.timer.timeout.connect(self.update_time)
-        self.timer.start()
-
         self.destination_folder = ""
 
-    # This function is sending data to the frontend (uses the updated signal)
-    def update_time(self):
-        # Pass the current time to QML.
-        curr_time = strftime("%H:%M:%S", localtime())
-        self.updated.emit(curr_time)
-
+    # This function is sending data to the frontend (uses the status signal)
     def update_status(self, msg):
         # Pass the current status message to QML.
         self.status.emit(msg)
@@ -100,7 +89,6 @@ if __name__ == '__main__':
     # Get QML File context
     backend = Backend()
     engine.rootObjects()[0].setProperty('backend', backend)
-    backend.update_time()
     backend.readSerial()
 
     sys.exit(app.exec_())
