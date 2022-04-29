@@ -2,7 +2,7 @@ import sys
 import time
 import threading
 
-from PySide2.QtGui import QGuiApplication
+from PySide2.QtGui import QGuiApplication, QIcon
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QObject, Slot, Signal, QTimer
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     app.setOrganizationName("Some Company")
     app.setOrganizationDomain("somecompany.com")
     app.setApplicationName("Amazing Application")
-
+    app.setWindowIcon(QIcon("images/icon.png"))
     engine = QQmlApplicationEngine()
 
     # Load QML file
