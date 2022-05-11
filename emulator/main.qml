@@ -12,7 +12,7 @@ Window {
     property string fileName: ""
     property string statusMessage: ""
     property string buttonMessage: ""
-    property int transferSpeed: 3
+    property int transferSpeed: 1
     property QtObject backend
 
     Connections {
@@ -37,7 +37,7 @@ Window {
     }
     function slowerAllowed() {
         var speed = transferSpeed
-        if(speed >1){
+        if(speed > 1){
             return true
         }
         else {
@@ -46,7 +46,7 @@ Window {
     }
     function fasterAllowed() {
         var speed = transferSpeed
-        if(speed <5){
+        if(speed < 5){
             return true
         }
         else {
@@ -148,12 +148,14 @@ Window {
                 id: displaySpeed
                 anchors{
                     bottom: increaseSpeed.top
-                    bottomMargin: 10
+                    bottomMargin: 40
                     horizontalCenter: parent.horizontalCenter
                 }
                 Text{
                     text: transferSpeed
                     color: "oldlace"
+                    font.pixelSize: 24
+                    font.family: "Yu Gothic UI Semilight"
                 }
                 
                 color: "transparent"
@@ -197,7 +199,12 @@ Window {
         }
         Rectangle {
             id: transfer
-            anchors.fill: parent
+            anchors{
+                right: parent.horizontalCenter
+                top: parent.top
+                bottom: parent.bottom
+                left: parent.left
+            }
             color: "transparent"
 
             Button {
@@ -213,7 +220,7 @@ Window {
                     color: "oldlace"
                 }
                 background: Rectangle {
-                    implicitWidth: 50
+                    implicitWidth: 100
                     implicitHeight: 50
                     color: "#36454F"
                     radius: 8
