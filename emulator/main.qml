@@ -12,7 +12,7 @@ Window {
     property string fileName: ""
     property string statusMessage: ""
     property string buttonMessage: ""
-    property string transferSpeed: ""
+    property int transferSpeed: 3
     property QtObject backend
 
     Connections {
@@ -137,16 +137,62 @@ Window {
         }
         Rectangle {
             id: speeds
-            color: "red"
+            color: "transparent"
             anchors {
                 left: parent.horizontalCenter
                 top: parent.top
                 right: parent.right
                 bottom: parent.bottom
             }
+            Rectangle {
+                id: displaySpeed
+                anchors{
+                    bottom: increaseSpeed.top
+                    bottomMargin: 10
+                    horizontalCenter: parent.horizontalCenter
+                }
+                Text{
+                    text: transferSpeed
+                    color: "oldlace"
+                }
+                
+                color: "transparent"
 
+            }
             Button {
+                id: increaseSpeed
                 text: "+"
+                anchors{
+                    left: parent.horizontalCenter
+                    leftMargin:5
+                    verticalCenter: parent.verticalCenter
+                }
+                background: Rectangle {
+                    implicitWidth: 75
+                    implicitHeight: 75
+                    color: "oldlace"
+                    radius: 8
+                }
+                enabled: fasterAllowed()
+
+                //onclicked: backend method
+            }
+            Button {
+                id: decreaseSpeed
+                text: "-"
+                anchors{
+                    right: parent.horizontalCenter
+                    leftMargin: 5
+                    verticalCenter: parent.verticalCenter
+                }
+                background: Rectangle {
+                    implicitWidth: 75
+                    implicitHeight: 75
+                    color: "oldlace"
+                    radius: 8
+                }
+                enabled: slowerAllowed()
+                //onclicked: backend method
             }
         }
         Rectangle {
