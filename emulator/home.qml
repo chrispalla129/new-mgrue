@@ -5,8 +5,6 @@ import QtQuick.Window 2.1
 
 Window {
     visible: true
-    width: 600
-    height: 500
     title: "mGRUE"
     color: "lightslategrey"
     property string fileName: ""
@@ -26,7 +24,7 @@ Window {
         anchors.fill: parent
         color: "transparent"
         Text {
-            text: "mGRUE Device Driver"
+            text: "mGRUE Device"
             font.family: "Yu Gothic UI Semibold"
             font.pixelSize: 40
             color: "#36454F"

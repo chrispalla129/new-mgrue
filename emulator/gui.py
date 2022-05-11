@@ -92,7 +92,7 @@ def init(recordsPerFile):
     # Added to avoid runtime warnings
     app.setOrganizationName("UB CSE-453")
     app.setOrganizationDomain("engineering.buffalo")
-    app.setApplicationName("mGRUE Driver")
+    app.setApplicationName("mGRUE Emulator")
     app.setWindowIcon(QIcon("images/icon.png"))
     engine = QQmlApplicationEngine()
 
