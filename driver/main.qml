@@ -11,6 +11,7 @@ Window {
     color: "lightslategrey"
     property string fileName: ""
     property string statusMessage: ""
+    property string buttonMessage: ""
     property QtObject backend
 
     Connections {
@@ -25,7 +26,7 @@ Window {
         anchors.fill: parent
         color: "transparent"
         Text {
-            text: "mGRUE Host Device Driver"
+            text: "mGRUE Device Driver"
             font.family: "Yu Gothic UI Semibold"
             font.pixelSize: 40
             color: "#36454F"
@@ -58,63 +59,33 @@ Window {
             }
         }
 
-
-        FileDialog {
-            id: fileDialog
-            visible: false
-            title: "Please choose desired folder location"
-            folder: shortcuts.home
-            selectFolder: true
-            onAccepted: {
-                backend.getFileLocation(fileDialog.fileUrls)
-                location.text = fileDialog.fileUrls[0]
-                fileName = fileDialog.fileUrls[0]
-                close()
-            }
-            onRejected: {
-                console.log("File selection canceled by user")
-                close()
-            }
-        }
         Rectangle {
             id: fileLocation
             anchors.fill: parent
             color: "transparent"
 
             Button {
-            id: selectButton
-            text: "Select Folder"
-            font.family: "Yu Gothic UI Semilight"
-            
-            anchors.centerIn: parent
-            contentItem: Text {
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text: selectButton.text
-                color: "oldlace"
-            }
-            background: Rectangle {
-                implicitWidth: 200
-                implicitHeight: 50
-                color: "#36454F"
-                radius: 8
-            }
-            onClicked: fileDialog.visible = true    //Opens file dialog on click
-        }
-
-            Text {
-                id: location
-                anchors {
-                    top: selectButton.bottom
-                    topMargin: 12
-                    horizontalCenter: selectButton.horizontalCenter
-                }
-                text: "destination folder"  // display current destination
-                font.pixelSize: 20
+                id: selectButton
+                text: "Start Transfer"
                 font.family: "Yu Gothic UI Semilight"
-                color: "oldlace"
+                
+                anchors.centerIn: parent
+                contentItem: Text {
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: selectButton.text
+                    color: "oldlace"
+                }
+                background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: 200
+                    color: "#36454F"
+                    radius: 8
+                }
+                onClicked: backend.startTransfer()
             }
         }
+        
     }
 }
 /*##^##
