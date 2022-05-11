@@ -96,7 +96,7 @@ Window {
             text: "Settings"
             font.family: "Yu Gothic UI Semilight"
             anchors {
-                top: titleText.top
+                top: parent.top
                 topMargin: 5
                 left: parent.left
                 leftMargin: 5
@@ -150,6 +150,7 @@ Window {
                     bottom: increaseSpeed.top
                     bottomMargin: 50
                     horizontalCenter: parent.horizontalCenter
+                    horizontalCenterOffset: -5
                 }
                 Text{
                     text: transferSpeed
