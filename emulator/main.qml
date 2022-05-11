@@ -12,7 +12,7 @@ Window {
     property string fileName: ""
     property string statusMessage: ""
     property string buttonMessage: ""
-    property int transferSpeed: 1
+    property int transferSpeed: 5
     property QtObject backend
 
     Connections {
@@ -60,7 +60,7 @@ Window {
         color: "transparent"
         Text {
             id: titleText
-            text: "mGRUE Device"
+            text: "mGRUE"
             font.family: "Yu Gothic UI Semibold"
             font.pixelSize: 40
             color: "#36454F"
@@ -98,8 +98,8 @@ Window {
             anchors {
                 top: titleText.top
                 topMargin: 5
-                right: titleText.left
-                rightMargin: 25
+                left: parent.left
+                leftMargin: 5
             }
             contentItem: Text {
                 horizontalAlignment: Text.AlignHCenter
@@ -108,8 +108,8 @@ Window {
                 color: "oldlace"
             }
             background: Rectangle {
-                implicitWidth: 50
-                implicitHeight: 50
+                implicitWidth: 125
+                implicitHeight: 75
                 color: "#36454F"
                 radius: 8
             }
@@ -164,6 +164,7 @@ Window {
             Button {
                 id: increaseSpeed
                 text: "+"
+                font.pixelSize: 24
                 anchors{
                     left: parent.horizontalCenter
                     leftMargin:5
@@ -182,6 +183,8 @@ Window {
             Button {
                 id: decreaseSpeed
                 text: "-"
+                font.pixelSize: 24
+
                 anchors{
                     right: parent.horizontalCenter
                     leftMargin: 5
@@ -218,10 +221,11 @@ Window {
                     verticalAlignment: Text.AlignVCenter
                     text: selectButton.text
                     color: "oldlace"
+                    font.pixelSize: 24
                 }
                 background: Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 50
+                    implicitWidth: 125
+                    implicitHeight: 75
                     color: "#36454F"
                     radius: 8
                 }
