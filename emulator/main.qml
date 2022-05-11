@@ -148,14 +148,14 @@ Window {
                 id: displaySpeed
                 anchors{
                     bottom: increaseSpeed.top
-                    bottomMargin: 40
+                    bottomMargin: 50
                     horizontalCenter: parent.horizontalCenter
                 }
                 Text{
                     text: transferSpeed
                     color: "oldlace"
-                    font.pixelSize: 24
-                    font.family: "Yu Gothic UI Semilight"
+                    font.pixelSize: 32
+                    font.family: "Yu Gothic UI Semibold"
                 }
                 
                 color: "transparent"
