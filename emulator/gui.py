@@ -20,7 +20,7 @@ class Backend(QObject):
     def __init__(self):
         super().__init__()
 
-        self.destination_folder = ""
+        self.source_file = ""
 
     # This function is sending data to the frontend (uses the status signal)
     def update_status(self, msg):
@@ -42,6 +42,11 @@ class Backend(QObject):
     def update_records(self,n):
         self.recordsPerFile = n
 
+    # This function is getting data from frontend
+    @Slot(str)
+    def getFileLocation(self, location):
+        print("User selected: " + location[7:])
+        self.source_file = location[7:]
     # This function increases the transfer speed by 1
     @Slot()
     def upSpeed(self):

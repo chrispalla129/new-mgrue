@@ -78,14 +78,13 @@ Window {
         FileDialog {
             id: fileDialog
             visible: false
-            title: "Please choose desired folder location"
+            title: "Please choose desired source file"
             folder: shortcuts.home
-            selectFolder: true
             onAccepted: {
                 //update directory where files should be read from
-                //backend.getFileLocation(fileDialog.fileUrls)
+                backend.getFileLocation(fileDialog.fileUrls)
                 //location.text = fileDialog.fileUrls[0]
-                //fileName = fileDialog.fileUrls[0]
+                fileName = fileDialog.fileUrls[0]
                 console.log("User selected: "+ fileDialog.fileUrls[0])
                 close()
             }
