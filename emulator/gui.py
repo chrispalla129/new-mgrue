@@ -14,7 +14,9 @@ class Backend(QObject):
     recordsPerFile = 500        # Set max number of records that will be written to each file here
     currentStatus = "awaiting"
     buttonMessage = "Start Transfer"
+    transferSpeed = 5
     status = Signal(str)
+    speed = Signal(int)
     def __init__(self):
         super().__init__()
 
@@ -31,10 +33,28 @@ class Backend(QObject):
         # Pass the current status message to QML.
         self.buttonMessage = msg
         self.status.emit(msg)
+    # This function is sending the updated speed to the frontend (uses the speed signal)
+    def update_speed(self,speed):
+        self.transferSpeed = speed
+        self.speed.emit(speed)
         
     #This function sets the max records per file based on user input
     def update_records(self,n):
         self.recordsPerFile = n
+
+    # This function increases the transfer speed by 1
+    @Slot()
+    def upSpeed(self):
+        print("Speed Increased")
+        self.transferSpeed += 1
+        self.update_speed(self.transferSpeed)
+
+    # This function decreases the transfer speed by 1
+    @Slot()
+    def downSpeed(self):
+        print("Speed Decreased")
+        self.transferSpeed -= 1
+        self.update_speed(self.transferSpeed)
 
     # This function is getting data from frontend
     @Slot()

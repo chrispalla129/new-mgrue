@@ -20,6 +20,9 @@ Window {
         function onStatus(msg) {
             statusMessage = msg;
         }
+        function onSpeed(speed) {
+            transferSpeed = speed;
+        }
     }
 
     function getButtonMessage() {
@@ -179,7 +182,7 @@ Window {
                 }
                 enabled: fasterAllowed()
 
-                //onclicked: backend method
+                onClicked: backend.upSpeed()
             }
             Button {
                 id: decreaseSpeed
@@ -198,7 +201,7 @@ Window {
                     radius: 8
                 }
                 enabled: slowerAllowed()
-                //onclicked: backend method
+                onClicked: backend.downSpeed()
             }
         }
         Rectangle {
