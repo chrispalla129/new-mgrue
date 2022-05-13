@@ -55,7 +55,7 @@ class Backend(QObject):
             thread.start()
 
     def writeSerial(self):
-        with serial.Serial('/dev/pts/5', 256000, timeout=1) as ser:
+        with serial.Serial('/dev/ttyGS0', 256000, timeout=1) as ser:
             while (self.currentStatus != "Finished Transfer"):
                 if (self.currentStatus == "Awaiting Connection" or \
                         self.currentStatus == "Attempting to Connect..."):
@@ -66,17 +66,17 @@ class Backend(QObject):
                         print("connected!")
                     else:
                         self.update_status("Attempting to Connect...")
-                        ser.write(b"connect\n")
+                        ser.write(b"connect\r\n")
                         print("connecting...")
                         time.sleep(.5)
                 elif(self.currentStatus == "Connected"):
-                    with open("../largeSet.fn", "r") as f:
+                    with open("/home/pi/Projects/true-mgrue/largeSet.fn", "r") as f:
                         for line in f.readlines():
                             ser.write(line.encode("utf-8"))
                             if (self.currentStatus == "Pausing..." and line == "\n"):     
                                 while(self.currentStatus == "Pausing..." or self.currentStatus == "Paused"):
                                     if (self.currentStatus == "Pausing..."):
-                                        ser.write(b"pause\n")
+                                        ser.write(b"pause\r\n")
                                         self.update_status("Paused")
                                     time.sleep(.1)
                                 
@@ -94,8 +94,9 @@ def init(recordsPerFile):
     app.setOrganizationDomain("engineering.buffalo")
     app.setApplicationName("mGRUE Emulator")
     app.setWindowIcon(QIcon("images/icon.png"))
+    
     engine = QQmlApplicationEngine()
-
+    
     # Load QML file
     engine.load('main.qml')
     engine.quit.connect(app.quit)
@@ -104,6 +105,6 @@ def init(recordsPerFile):
     backend = Backend()
     engine.rootObjects()[0].setProperty('backend', backend)
     backend.update_records(recordsPerFile)
-
+    
     backend.update_status("Awaiting Connection")
     sys.exit(app.exec_())
