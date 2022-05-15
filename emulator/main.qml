@@ -66,7 +66,7 @@ Window {
             text: "mGRUE"
             font.family: "Yu Gothic UI Semibold"
             font.pixelSize: 40
-            color: "#36454F"
+            color: "oldlace"
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter 
@@ -147,10 +147,17 @@ Window {
                     leftMargin:5
                     verticalCenter: parent.verticalCenter
                 }
+                contentItem: Text {
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: increaseSpeed.text
+                    color: "oldlace"
+                    font.pixelSize: 48
+                }
                 background: Rectangle {
                     implicitWidth: 105
                     implicitHeight: 105
-                    color: "oldlace"
+                    color: enabled ? "#36454F" : "dimgrey"
                     radius: 8
                 }
                 enabled: fasterAllowed()
@@ -167,10 +174,17 @@ Window {
                     leftMargin: 5
                     verticalCenter: parent.verticalCenter
                 }
+                contentItem: Text {
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: decreaseSpeed.text
+                    color: "oldlace"
+                    font.pixelSize: 48
+                }
                 background: Rectangle {
                     implicitWidth: 105
                     implicitHeight: 105
-                    color: "oldlace"
+                    color: enabled ? "#36454F" : "dimgrey"
                     radius: 8
                 }
                 enabled: slowerAllowed()
