@@ -8,7 +8,7 @@ from PySide2.QtCore import QObject, Slot, Signal
 
 from datetime import datetime
 import serial
-
+import math
 # Define our backend object, which we will pass to the engine object
 class Backend(QObject):
     recordsPerFile = 500        # Set max number of records that will be written to each file here
@@ -69,7 +69,7 @@ class Backend(QObject):
                 self.currentStatus == "Attempting to Connect..."): 
             thread = threading.Thread(target=self.writeSerial, args=())
             thread.start()
-        elif (self.currentStatus == "Connected"):
+        elif "Connected" in self.currentStatus:
             print("Pausing...")
             self.update_status("Pausing...")
         elif (self.currentStatus == "Paused"):
@@ -80,8 +80,9 @@ class Backend(QObject):
             thread.start()
 
     def writeSerial(self):
-        with serial.Serial('/dev/ttyGS0', 256000, timeout=1) as ser:
-            while (self.currentStatus != "Finished Transfer"):
+        waitTime = .01 * (5 - self.transferSpeed)                  # This is super arbitrary rn
+        with serial.Serial('/dev/ttyGS0', 115200, timeout=1) as ser:
+            while (True):
                 if (self.currentStatus == "Awaiting Connection" or \
                         self.currentStatus == "Attempting to Connect..."):
                     bytesMessage = ser.readline().decode()[:-1]     # read a '\n' terminated line, removing the \n
@@ -94,20 +95,31 @@ class Backend(QObject):
                         ser.write(b"connect\r\n")
                         print("connecting...")
                         time.sleep(.5)
-                elif(self.currentStatus == "Connected"):
-                    with open("/home/pi/Projects/true-mgrue/largeSet.fn", "r") as f:
-                        for line in f.readlines():
-                            ser.write(line.encode("utf-8"))
+                elif "Connected" in self.currentStatus:
+                    with open("/home/pi/Projects/true-mgrue/veryLargeSet.fn", "r") as f:
+                        lines = f.readlines()
+                        count = 0
+                        total = len(lines)
+                        for line in lines:
+                            print(count / total)
+                            ser.write(line.encode("unicode_escape"))
                             if (self.currentStatus == "Pausing..." and line == "\n"):     
                                 while(self.currentStatus == "Pausing..." or self.currentStatus == "Paused"):
                                     if (self.currentStatus == "Pausing..."):
                                         ser.write(b"pause\r\n")
                                         self.update_status("Paused")
                                     time.sleep(.1)
+                            time.sleep(waitTime)
+                            if (self.currentStatus != "Pausing..."):
+                                self.update_status("Connected: " + \
+                                                    str(math.floor((count / total) * 100)) + "% complete")
+                            count += 1
                                 
                         self.update_status("Finished Transfer")
                         print("finished writing to port")
-                
+                elif self.currentStatus == "Finished Transfer":
+                    time.sleep(5)
+                    self.update_status("Awaiting Connection")
                     
 
 
