@@ -37,7 +37,8 @@ ApplicationWindow {
         else if(stat == "Paused" || stat =="Paused.") {
             return "Resume"
         }
-        else if(stat == "Connected" || stat == "Finished Transfer" || stat == "User stopped transfer early"){
+        else if(stat == "Connected" || stat == "Finished Transfer" || stat == "User stopped transfer early." 
+                || stat == "Transfer was stopped early. Awaiting new command..."){
             return "Start Transfer"
         }
         if (stat == "Connected, transferring....") {

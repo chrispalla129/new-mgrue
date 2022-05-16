@@ -1,6 +1,7 @@
 import sys
 import time
 import threading
+import os
 
 from PySide2.QtGui import QGuiApplication, QIcon
 from PySide2.QtQml import QQmlApplicationEngine
@@ -43,6 +44,18 @@ class Backend(QObject):
     #This function sets the max records per file based on user input
     def update_records(self,n):
         self.recordsPerFile = n
+
+    def getDelay(self,n):
+        if n == 1:
+            return 1/2000
+        elif n == 2:
+            return 1/6000
+        elif n == 3:
+            return 1/24000
+        elif n == 4:
+            return 1/72000
+        elif n == 5:
+            return 0
 
     # This function is getting data from frontend
     @Slot()
@@ -89,7 +102,7 @@ class Backend(QObject):
                 self.writeSerial()
 
     def writeSerial(self):
-        waitTime = .01 * (5 - self.transferSpeed)  # This is super arbitrary rn
+        waitTime = self.getDelay(self.transferSpeed)
         try:                
             ser = serial.Serial('/dev/ttyGS0', 921600, timeout=1)
         except:
@@ -111,7 +124,7 @@ class Backend(QObject):
                         time.sleep(.5)
                 elif "Connected" in self.currentStatus:
                     try:
-                        f = open("/home/pi/Projects/true-mgrue/veryLargeSet.fn", "r")
+                        f = open("/home/pi/data/largeSet.fn", "r")
                     except:
                         self.update_status("ERROR: File read error!")
                         return
@@ -127,6 +140,11 @@ class Backend(QObject):
                                     if (self.currentStatus == "Pausing..."):
                                         ser.write(b"pause\n")
                                         self.update_status("Paused")
+                                    elif self.stopFunction:
+                                        self.update_status("User stopped transfer early.")
+                                        ser.write(b"kill\n")
+                                        time.sleep(1)
+                                        return
                                     time.sleep(.1)
                             if self.stopFunction:
                                 self.update_status("User stopped transfer early.")
@@ -163,7 +181,7 @@ def init(recordsPerFile):
     engine = QQmlApplicationEngine()
 
     # Load QML file
-    engine.load('main.qml')
+    engine.load(os.path.dirname(os.path.abspath(__file__)) + '/main.qml')
     engine.quit.connect(app.quit)
 
     # Get QML File context
