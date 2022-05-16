@@ -30,7 +30,8 @@ ApplicationWindow {
 
     function getButtonMessage() {
         var stat = statusMessage
-        if(stat == "Awaiting Connection" || stat == "Attempting to Connect..."){
+        console.log(statusMessage)
+        if(stat == "Awaiting Connection" || stat == "Attempting to Connect..." || stat == "ERROR: Serial port connection error!"){
             return "Connect"
         }
         else if(stat == "Paused") {
@@ -62,18 +63,15 @@ ApplicationWindow {
 
 
     function toggleScreen() {
-        console.log(window.visibility)
         if(window.visibility == 5|| window.visibility ==4){
             window.visibility = "Windowed"
         }
         else if(window.visibility == 2){
             window.visibility = "FullScreen"
         }
-
     }
     Button {
-
-
+        id: toggle
         anchors{
             top: parent.top
             topMargin: 4
