@@ -25,8 +25,8 @@ class Backend(QObject):
 
     def __init__(self):
         super().__init__()
-
-        self.source_file = ""
+        self.source_file = "/home/pi/data/largeSet.fn"
+        self.stop_thread = False
 
     # This function is sending data to the frontend (uses the status signal)
     def update_status(self, msg):
@@ -60,6 +60,10 @@ class Backend(QObject):
             return 1 / 72000
         elif n == 5:
             return 0
+
+    @Slot()
+    def stopThread(self):
+        self.stop_thread = True
 
     # This function is getting data from frontend
     @Slot()
@@ -188,12 +192,13 @@ def init(recordsPerFile):
 
     # Load QML file
     engine.load(os.path.dirname(os.path.abspath(__file__)) + '/main.qml')
-    engine.quit.connect(app.quit)
 
     # Get QML File context
     backend = Backend()
+    engine.quit.connect(backend.stopThread)
+    engine.quit.connect(app.quit)
+
     engine.rootObjects()[0].setProperty('backend', backend)
     backend.update_records(recordsPerFile)
-
     backend.update_status("Awaiting Connection")
     sys.exit(app.exec_())
