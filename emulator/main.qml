@@ -3,10 +3,13 @@ import QtQuick.Controls 2.15
 import QtQuick.Dialogs 1.0
 import QtQuick.Window 2.1
 
-Window {
+ApplicationWindow {
+    id: window
     visible: true
+    visibility: "FullScreen"
     width: 480
     height: 320
+
     title: "mGRUE"
     color: "lightslategrey"
     property string fileName: ""
@@ -27,13 +30,13 @@ Window {
 
     function getButtonMessage() {
         var stat = statusMessage
-        if(stat = "Awaiting Connection"){
+        if(stat == "Awaiting Connection" || stat == "Attempting to Connect..."){
             return "Connect"
         }
-        else if(stat = "Paused") {
+        else if(stat == "Paused") {
             return "Resume"
         }
-        else if(stat = "Connected"){
+        else if(stat == "Connected"){
             return "Start Transfer"
         }
 
@@ -57,6 +60,41 @@ Window {
         }
     }
 
+
+    function toggleScreen() {
+        console.log(window.visibility)
+        if(window.visibility == 5|| window.visibility ==4){
+            window.visibility = "Windowed"
+        }
+        else if(window.visibility == 2){
+            window.visibility = "FullScreen"
+        }
+
+    }
+    Button {
+
+
+        anchors{
+            top: parent.top
+            topMargin: 4
+            right: parent.right
+            rightMargin: 4
+        }
+        background: Rectangle{
+            color: "#36454F"
+            implicitHeight: 40
+            implicitWidth: 100
+            radius: 4
+        }
+        contentItem: Text{
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            color: "oldlace"
+            text: "Toggle Screen"
+        }
+        
+        onClicked: toggleScreen()
+    }
 
     Rectangle {
         id: title
