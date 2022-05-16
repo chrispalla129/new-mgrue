@@ -40,6 +40,9 @@ ApplicationWindow {
         else if(stat == "Connected"){
             return "Start Transfer"
         }
+        if (stat == "Connected, transferring....") {
+            return "Pause"
+        }
 
     }
     function slowerAllowed() {
