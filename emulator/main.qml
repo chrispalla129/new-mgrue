@@ -36,7 +36,7 @@ Window {
         else if(stat = "Connected"){
             return "Start Transfer"
         }
-            
+
     }
     function slowerAllowed() {
         var speed = transferSpeed
@@ -57,6 +57,7 @@ Window {
         }
     }
 
+
     Rectangle {
         id: title
         anchors.fill: parent
@@ -66,13 +67,11 @@ Window {
             text: "mGRUE"
             font.family: "Yu Gothic UI Semibold"
             font.pixelSize: 40
-            color: "#36454F"
+            color: "oldlace"
             anchors {
                 top: parent.top
                 horizontalCenter: parent.horizontalCenter
-                topMargin: 12
             }
-
         }
 
         FileDialog {
@@ -93,30 +92,7 @@ Window {
                 close()
             }
         }
-        Button{
-            id: settingsButton
-            text: "Settings"
-            font.family: "Yu Gothic UI Semilight"
-            anchors {
-                top: parent.top
-                topMargin: 5
-                left: parent.left
-                leftMargin: 5
-            }
-            contentItem: Text {
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text: settingsButton.text
-                color: "oldlace"
-            }
-            background: Rectangle {
-                implicitWidth: 125
-                implicitHeight: 75
-                color: "#36454F"
-                radius: 8
-            }
-            onClicked: fileDialog.visible = true
-        }
+
 
         Rectangle {
             id: messageSection
@@ -160,43 +136,57 @@ Window {
                     font.pixelSize: 32
                     font.family: "Yu Gothic UI Semibold"
                 }
-                
                 color: "transparent"
 
             }
             Button {
                 id: increaseSpeed
                 text: "+"
-                font.pixelSize: 24
+                font.pixelSize: 48
                 anchors{
                     left: parent.horizontalCenter
                     leftMargin:5
                     verticalCenter: parent.verticalCenter
                 }
-                background: Rectangle {
-                    implicitWidth: 75
-                    implicitHeight: 75
+                contentItem: Text {
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: increaseSpeed.text
                     color: "oldlace"
+                    font.pixelSize: 48
+                }
+                background: Rectangle {
+                    implicitWidth: 105
+                    implicitHeight: 105
+                    color: increaseSpeed.pressed ? "dimgrey" : !enabled  ? "dimgrey" :"#36454F"
                     radius: 8
                 }
                 enabled: fasterAllowed()
 
                 onClicked: backend.upSpeed()
+
             }
             Button {
                 id: decreaseSpeed
                 text: "-"
-                font.pixelSize: 24
+                font.pixelSize: 48
 
                 anchors{
                     right: parent.horizontalCenter
                     leftMargin: 5
                     verticalCenter: parent.verticalCenter
                 }
-                background: Rectangle {
-                    implicitWidth: 75
-                    implicitHeight: 75
+                contentItem: Text {
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: decreaseSpeed.text
                     color: "oldlace"
+                    font.pixelSize: 48
+                }
+                background: Rectangle {
+                    implicitWidth: 105
+                    implicitHeight: 105
+                    color: decreaseSpeed.pressed ? "dimgrey" : !enabled  ? "dimgrey" :"#36454F"
                     radius: 8
                 }
                 enabled: slowerAllowed()
@@ -213,29 +203,57 @@ Window {
             }
             color: "transparent"
 
-            Button {
-                id: selectButton
-                text: getButtonMessage()
-                font.family: "Yu Gothic UI Semilight"
-                
-                anchors.centerIn: parent
-                contentItem: Text {
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    text: selectButton.text
-                    color: "oldlace"
-                    font.pixelSize: 24
-                }
-                background: Rectangle {
-                    implicitWidth: 125
-                    implicitHeight: 75
-                    color: "#36454F"
-                    radius: 8
-                }
-                onClicked: backend.startTransfer()
+            Button{
+            id: settingsButton
+            text: "Location"
+            font.family: "Yu Gothic UI Semilight"
+            anchors {
+                top: selectButton.bottom
+                topMargin: 5
+                left: selectButton.left
             }
+            contentItem: Text {
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text: settingsButton.text
+                color: "oldlace"
+                font.pixelSize: 24
+            }
+            background: Rectangle {
+                implicitWidth: 150
+                implicitHeight: 100
+                color: settingsButton.pressed ? "dimgrey" :"#36454F"
+                radius: 8
+            }
+            onClicked: fileDialog.visible = true
         }
-        
+        Button {
+            id: selectButton
+            text: getButtonMessage()
+            font.family: "Yu Gothic UI Semilight"
+
+            anchors{
+                bottom: parent.verticalCenter
+                bottomMargin: 5
+                horizontalCenter: parent.horizontalCenter
+            }
+            contentItem: Text {
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text: selectButton.text
+                color: "oldlace"
+                font.pixelSize: 24
+            }
+            background: Rectangle {
+                implicitWidth: 150
+                implicitHeight: 100
+                color: selectButton.pressed ? "dimgrey" :"#36454F"
+                radius: 8
+            }
+            onClicked: backend.startTransfer()
+        }
+        }
+
     }
 }
 /*##^##

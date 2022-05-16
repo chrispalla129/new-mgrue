@@ -27,7 +27,7 @@ class Backend(QObject):
         # Pass the current status message to QML.
         self.currentStatus = msg
         self.status.emit(msg)
-    
+
     # This function is sending data to the frontend (uses the status signal)
     def update_buton_msg(self, msg):
         # Pass the current status message to QML.
@@ -37,7 +37,7 @@ class Backend(QObject):
     def update_speed(self,speed):
         self.transferSpeed = speed
         self.speed.emit(speed)
-        
+
     #This function sets the max records per file based on user input
     def update_records(self,n):
         self.recordsPerFile = n
@@ -66,7 +66,7 @@ class Backend(QObject):
     def startTransfer(self):
         print("User Clicked Button!")
         if (self.currentStatus == "Awaiting Connection" or \
-                self.currentStatus == "Attempting to Connect..."): 
+                self.currentStatus == "Attempting to Connect..."):
             thread = threading.Thread(target=self.writeSerial, args=())
             thread.start()
         elif "Connected" in self.currentStatus:
@@ -80,8 +80,13 @@ class Backend(QObject):
             thread.start()
 
     def writeSerial(self):
-        waitTime = .001 * (5 - self.transferSpeed)                  # This is super arbitrary rn
-        with serial.Serial('/dev/ttyGS0', 921600, timeout=1) as ser:
+        waitTime = .01 * (5 - self.transferSpeed)
+        try:                # This is super arbitrary rn
+            ser = serial.Serial('/dev/ttyGS0', 921600, timeout=1)
+        except:
+            self.update_status("ERROR: Serial port connection error!")
+            return
+        with ser:
             while (True):
                 if (self.currentStatus == "Awaiting Connection" or \
                         self.currentStatus == "Attempting to Connect..."):
@@ -96,8 +101,13 @@ class Backend(QObject):
                         print("connecting...")
                         time.sleep(.5)
                 elif "Connected" in self.currentStatus:
-                    with open("/home/pi/Projects/true-mgrue/veryLargeSet.fn", "r") as f:
-                        self.update_status("Connected, transferring....")
+                    try:
+                        f = open(self.source_file, "r")
+                    except:
+                        self.update_status("ERROR: File read error!")
+                        return
+                    self.update_status("Connected, transferring....")
+                    with f:
                         lines = f.readlines()
                         count = 0
                         total = len(lines)
@@ -115,7 +125,7 @@ class Backend(QObject):
                             #     self.update_status("Connected: " + \
                             #                         str(math.floor((count / total) * 100)) + "% complete")
                             count += 1
-                                
+
                         self.update_status("Finished Transfer")
                         print("finished writing to port")
                 elif self.currentStatus == "Finished Transfer":
@@ -123,7 +133,7 @@ class Backend(QObject):
                     print("Wrote done!")
                     time.sleep(5)
                     self.update_status("Awaiting Connection")
-                    
+
 
 
 def init(recordsPerFile):
@@ -134,9 +144,9 @@ def init(recordsPerFile):
     app.setOrganizationDomain("engineering.buffalo")
     app.setApplicationName("mGRUE Emulator")
     app.setWindowIcon(QIcon("images/icon.png"))
-    
+
     engine = QQmlApplicationEngine()
-    
+
     # Load QML file
     engine.load('main.qml')
     engine.quit.connect(app.quit)
@@ -145,6 +155,6 @@ def init(recordsPerFile):
     backend = Backend()
     engine.rootObjects()[0].setProperty('backend', backend)
     backend.update_records(recordsPerFile)
-    
+
     backend.update_status("Awaiting Connection")
     sys.exit(app.exec_())
