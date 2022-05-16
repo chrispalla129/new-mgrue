@@ -36,7 +36,7 @@ Window {
         else if(stat = "Connected"){
             return "Start Transfer"
         }
-            
+
     }
     function slowerAllowed() {
         var speed = transferSpeed
@@ -57,6 +57,7 @@ Window {
         }
     }
 
+
     Rectangle {
         id: title
         anchors.fill: parent
@@ -69,7 +70,7 @@ Window {
             color: "oldlace"
             anchors {
                 top: parent.top
-                horizontalCenter: parent.horizontalCenter 
+                horizontalCenter: parent.horizontalCenter
             }
         }
 
@@ -91,7 +92,7 @@ Window {
                 close()
             }
         }
-        
+
 
         Rectangle {
             id: messageSection
@@ -157,12 +158,13 @@ Window {
                 background: Rectangle {
                     implicitWidth: 105
                     implicitHeight: 105
-                    color: enabled ? "#36454F" : "dimgrey"
+                    color: increaseSpeed.pressed ? "dimgrey" : !enabled  ? "dimgrey" :"#36454F"
                     radius: 8
                 }
                 enabled: fasterAllowed()
 
                 onClicked: backend.upSpeed()
+
             }
             Button {
                 id: decreaseSpeed
@@ -184,7 +186,7 @@ Window {
                 background: Rectangle {
                     implicitWidth: 105
                     implicitHeight: 105
-                    color: enabled ? "#36454F" : "dimgrey"
+                    color: decreaseSpeed.pressed ? "dimgrey" : !enabled  ? "dimgrey" :"#36454F"
                     radius: 8
                 }
                 enabled: slowerAllowed()
@@ -220,7 +222,7 @@ Window {
             background: Rectangle {
                 implicitWidth: 150
                 implicitHeight: 100
-                color: "#36454F"
+                color: settingsButton.pressed ? "dimgrey" :"#36454F"
                 radius: 8
             }
             onClicked: fileDialog.visible = true
@@ -229,7 +231,7 @@ Window {
             id: selectButton
             text: getButtonMessage()
             font.family: "Yu Gothic UI Semilight"
-            
+
             anchors{
                 bottom: parent.verticalCenter
                 bottomMargin: 5
@@ -245,13 +247,13 @@ Window {
             background: Rectangle {
                 implicitWidth: 150
                 implicitHeight: 100
-                color: "#36454F"
+                color: selectButton.pressed ? "dimgrey" :"#36454F"
                 radius: 8
             }
             onClicked: backend.startTransfer()
         }
         }
-        
+
     }
 }
 /*##^##
