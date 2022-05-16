@@ -205,7 +205,7 @@ Window {
 
             Button{
             id: settingsButton
-            text: "Location"
+            text: "Stop Transfer"
             font.family: "Yu Gothic UI Semilight"
             anchors {
                 top: selectButton.bottom
@@ -225,7 +225,7 @@ Window {
                 color: settingsButton.pressed ? "dimgrey" :"#36454F"
                 radius: 8
             }
-            onClicked: fileDialog.visible = true
+            onClicked: backend.stopTransfer()
         }
         Button {
             id: selectButton

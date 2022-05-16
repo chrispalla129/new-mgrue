@@ -15,8 +15,10 @@ class Backend(QObject):
     currentStatus = "awaiting"
     buttonMessage = "Start Transfer"
     transferSpeed = 5
+    stopFunction  = False
     status = Signal(str)
     speed = Signal(int)
+    thread = 0
     def __init__(self):
         super().__init__()
 
@@ -43,10 +45,10 @@ class Backend(QObject):
         self.recordsPerFile = n
 
     # This function is getting data from frontend
-    @Slot(str)
-    def getFileLocation(self, location):
-        print("User selected: " + location[7:])
-        self.source_file = location[7:]
+    @Slot()
+    def stopTransfer(self):
+        self.stopFunction = True
+        
     # This function increases the transfer speed by 1
     @Slot()
     def upSpeed(self):
@@ -67,21 +69,28 @@ class Backend(QObject):
         print("User Clicked Button!")
         if (self.currentStatus == "Awaiting Connection" or \
                 self.currentStatus == "Attempting to Connect..."):
-            thread = threading.Thread(target=self.writeSerial, args=())
-            thread.start()
+
+            self.thread = threading.Thread(target=self.writeStarter, args=())
+            self.thread.start()
         elif "Connected" in self.currentStatus:
             print("Pausing...")
             self.update_status("Pausing...")
         elif (self.currentStatus == "Paused"):
             print("Unpaused!")
             self.update_status("Connected")
-        elif (self.currentStatus == "Finished Transfer"):
-            thread = threading.Thread(target=self.writeSerial, args=())
-            thread.start()
+        elif self.currentStatus == "Finished Transfer":
+            self.stopFunction = False
+
+
+    def writeStarter(self):
+        while True:
+            if not self.stopFunction:
+                self.update_status("Awaiting Connection")
+                self.writeSerial()
 
     def writeSerial(self):
-        waitTime = .01 * (5 - self.transferSpeed)
-        try:                # This is super arbitrary rn
+        waitTime = .01 * (5 - self.transferSpeed)  # This is super arbitrary rn
+        try:                
             ser = serial.Serial('/dev/ttyGS0', 921600, timeout=1)
         except:
             self.update_status("ERROR: Serial port connection error!")
@@ -102,7 +111,7 @@ class Backend(QObject):
                         time.sleep(.5)
                 elif "Connected" in self.currentStatus:
                     try:
-                        f = open(self.source_file, "r")
+                        f = open("/home/pi/Projects/true-mgrue/veryLargeSet.fn", "r")
                     except:
                         self.update_status("ERROR: File read error!")
                         return
@@ -113,12 +122,17 @@ class Backend(QObject):
                         total = len(lines)
                         for line in lines:
                             ser.write(line.encode("utf-8"))
-                            if (self.currentStatus == "Pausing..." and line == "\n"):     
+                            if (self.currentStatus == "Pausing..."):     
                                 while(self.currentStatus == "Pausing..." or self.currentStatus == "Paused"):
                                     if (self.currentStatus == "Pausing..."):
                                         ser.write(b"pause\n")
                                         self.update_status("Paused")
                                     time.sleep(.1)
+                            if self.stopFunction:
+                                self.update_status("User stopped transfer early.")
+                                ser.write(b"kill\n")
+                                time.sleep(1)
+                                return
                             time.sleep(waitTime)
                             # Slows down the program too much, unfortunately...
                             # if (self.currentStatus != "Pausing..."):
@@ -131,8 +145,9 @@ class Backend(QObject):
                 elif self.currentStatus == "Finished Transfer":
                     ser.write(b"done\n")
                     print("Wrote done!")
+                    self.stopFunction = True
                     time.sleep(5)
-                    self.update_status("Awaiting Connection")
+                    return
 
 
 
