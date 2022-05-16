@@ -80,8 +80,8 @@ class Backend(QObject):
             thread.start()
 
     def writeSerial(self):
-        waitTime = .01 * (5 - self.transferSpeed)                  # This is super arbitrary rn
-        with serial.Serial('/dev/ttyGS0', 115200, timeout=1) as ser:
+        waitTime = .001 * (5 - self.transferSpeed)                  # This is super arbitrary rn
+        with serial.Serial('/dev/ttyGS0', 921600, timeout=1) as ser:
             while (True):
                 if (self.currentStatus == "Awaiting Connection" or \
                         self.currentStatus == "Attempting to Connect..."):
@@ -92,32 +92,35 @@ class Backend(QObject):
                         print("connected!")
                     else:
                         self.update_status("Attempting to Connect...")
-                        ser.write(b"connect\r\n")
+                        ser.write(b"connect\n")
                         print("connecting...")
                         time.sleep(.5)
                 elif "Connected" in self.currentStatus:
                     with open("/home/pi/Projects/true-mgrue/veryLargeSet.fn", "r") as f:
+                        self.update_status("Connected, transferring....")
                         lines = f.readlines()
                         count = 0
                         total = len(lines)
                         for line in lines:
-                            print(count / total)
-                            ser.write(line.encode("unicode_escape"))
+                            ser.write(line.encode("utf-8"))
                             if (self.currentStatus == "Pausing..." and line == "\n"):     
                                 while(self.currentStatus == "Pausing..." or self.currentStatus == "Paused"):
                                     if (self.currentStatus == "Pausing..."):
-                                        ser.write(b"pause\r\n")
+                                        ser.write(b"pause\n")
                                         self.update_status("Paused")
                                     time.sleep(.1)
                             time.sleep(waitTime)
-                            if (self.currentStatus != "Pausing..."):
-                                self.update_status("Connected: " + \
-                                                    str(math.floor((count / total) * 100)) + "% complete")
+                            # Slows down the program too much, unfortunately...
+                            # if (self.currentStatus != "Pausing..."):
+                            #     self.update_status("Connected: " + \
+                            #                         str(math.floor((count / total) * 100)) + "% complete")
                             count += 1
                                 
                         self.update_status("Finished Transfer")
                         print("finished writing to port")
                 elif self.currentStatus == "Finished Transfer":
+                    ser.write(b"done\n")
+                    print("Wrote done!")
                     time.sleep(5)
                     self.update_status("Awaiting Connection")
                     
