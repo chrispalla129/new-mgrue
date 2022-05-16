@@ -31,7 +31,7 @@ ApplicationWindow {
     function getButtonMessage() {
         var stat = statusMessage
         console.log(statusMessage)
-        if(stat == "Awaiting Connection" || stat == "Attempting to Connect..." || stat == "ERROR: Serial port connection error!" || stat= "ERROR: File read error!"){
+        if(stat == "Awaiting Connection" || stat == "Attempting to Connect..." || stat == "ERROR: Serial port connection error!" || stat == "ERROR: File read error!"){
             return "Connect"
         }
         else if(stat == "Paused" || stat =="Paused.") {
