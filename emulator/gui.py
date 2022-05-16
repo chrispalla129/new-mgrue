@@ -112,7 +112,7 @@ class Backend(QObject):
     def writeSerial(self):
         waitTime = self.getDelay(self.transferSpeed)
         try:
-            port = serial.Serial('/dev/ttyGS0', 921600, timeout=1)
+            port = serial.Serial('/dev/ttyGS0', 921600, timeout=None)
         except serial.SerialException as e:
             self.update_status("ERROR: Serial port connection error!")
             return
