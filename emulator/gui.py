@@ -77,8 +77,8 @@ class Backend(QObject):
             self.update_status("Pausing...")
         elif (self.currentStatus == "Paused"):
             print("Unpaused!")
-            self.update_status("Connected")
-        elif self.currentStatus == "Finished Transfer":
+            self.update_status("Connected, transferring....")
+        elif self.currentStatus == "Finished Transfer" or self.currentStatus == "User stopped transfer early.":
             self.stopFunction = False
 
 
