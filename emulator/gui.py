@@ -102,7 +102,7 @@ class Backend(QObject):
                         time.sleep(.5)
                 elif "Connected" in self.currentStatus:
                     try:
-                        f = open("/home/pi/Projects/true-mgrue/veryLargeSet.fn", "r")
+                        f = open(self.source_file, "r")
                     except:
                         self.update_status("ERROR: File read error!")
                         return
