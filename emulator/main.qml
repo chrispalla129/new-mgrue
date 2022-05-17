@@ -84,8 +84,8 @@ ApplicationWindow {
         }
         background: Rectangle{
             color: "#36454F"
-            implicitHeight: 40
-            implicitWidth: 100
+            implicitHeight: 60
+            implicitWidth: 120
             radius: 4
         }
         contentItem: Text{
@@ -249,19 +249,21 @@ ApplicationWindow {
             font.family: "Yu Gothic UI Semilight"
             anchors {
                 top: selectButton.bottom
-                topMargin: 5
+                topMargin: 55
                 left: selectButton.left
             }
             contentItem: Text {
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+                anchors.top: parent.verticalCenter
+                anchors.topMargin: 4
+                anchors.left: parent.left
+                anchors.leftMargin: 10
                 text: settingsButton.text
                 color: "oldlace"
-                font.pixelSize: 24
+                font.pixelSize: 28
             }
             background: Rectangle {
-                implicitWidth: 150
-                implicitHeight: 100
+                width: 185
+                height: 90
                 color: settingsButton.pressed ? "dimgrey" :"#36454F"
                 radius: 8
             }
@@ -271,22 +273,27 @@ ApplicationWindow {
             id: selectButton
             text: getButtonMessage()
             font.family: "Yu Gothic UI Semilight"
-
+            
             anchors{
                 bottom: parent.verticalCenter
-                bottomMargin: 5
-                horizontalCenter: parent.horizontalCenter
+                bottomMargin: 50
+                left: parent.left
+                leftMargin: 30
+                
             }
             contentItem: Text {
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+                anchors.top: parent.verticalCenter
+                anchors.topMargin: 4
+                anchors.left: parent.left
+                anchors.leftMargin: 45
+                
                 text: selectButton.text
                 color: "oldlace"
-                font.pixelSize: 24
+                font.pixelSize: 28
             }
             background: Rectangle {
-                implicitWidth: 150
-                implicitHeight: 100
+                width: 185
+                height: 90
                 color: selectButton.pressed ? "dimgrey" :"#36454F"
                 radius: 8
             }
