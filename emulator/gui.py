@@ -14,7 +14,7 @@ import math
 
 # Define our backend object, which we will pass to the engine object
 class Backend(QObject):
-    recordsPerFile = 500  # Set max number of records that will be written to each file here
+    recordsPerFile = 4000  # Set max number of records that will be written to each file here
     currentStatus = "awaiting"
     buttonMessage = "Start Transfer"
     transferSpeed = 5
@@ -25,7 +25,7 @@ class Backend(QObject):
 
     def __init__(self):
         super().__init__()
-        self.source_file = "/home/pi/data/largeSet.fn"
+        self.source_file = "/home/pi/data/dataSet.fn"
         self.stop_thread = False
 
     # This function is sending data to the frontend (uses the status signal)
@@ -112,7 +112,7 @@ class Backend(QObject):
     def writeSerial(self):
         waitTime = self.getDelay(self.transferSpeed)
         try:
-            port = serial.Serial('/dev/ttyGS0', 921600, timeout=None)
+            port = serial.Serial('/dev/ttyGS0', 921600, timeout=1)
         except serial.SerialException as e:
             self.update_status("ERROR: Serial port connection error!")
             return
@@ -127,6 +127,52 @@ class Backend(QObject):
                     if bytesMessage == "handshake":
                         self.update_status("Connected")
                         print("connected!")
+                    elif bytesMessage == "transfer":
+                        self.update_status("Transfer Mode Initiated: Transferring...")
+                        with open("/home/pi/data/dataSet.fn", "w") as file:
+                            while not self.stopFunction:
+                                leftover = ""
+                                bytesMessage = ser.read(ser.in_waiting).decode("utf-8", errors='replace')
+                                lines = bytesMessage.split('\n')
+                                print("INFO: Bytes in waiting: %s" %(ser.in_waiting), end="\r")
+                                if leftover:
+                                    lines[0] = leftover + lines[0]
+                                    leftover = ""
+
+                                for line in lines[:-1]:
+                                    if 'done' in line:
+                                        self.update_status("Finished Transfer")
+                                        file.close() 
+                                        self.stopFunction = True
+                                        time.sleep(5)
+                                        return
+                                    elif self.currentStatus == "Pausing...":
+                                        while (self.currentStatus == "Pausing..."
+                                            or self.currentStatus == "Paused"):
+                                            if self.currentStatus == "Pausing...":
+                                                ser.write(b"pause\n")
+                                                self.update_status("Paused")
+                                            elif self.stopFunction:
+                                                self.update_status("User stopped transfer early.")
+                                                ser.write(b"kill\n")
+                                                time.sleep(1)
+                                                return
+                                            time.sleep(.1)
+                                    else:
+                                        print("writing...")
+                                        if len(line) > 0 and line[-1] == '\n':
+                                            file.write(line)
+                                        else:
+                                            file.write(line + '\n')
+                                
+                                leftover = lines[-1]
+                                if 'done' in leftover:
+                                    self.update_status("Finished Transfer")
+                                    file.close()
+                            self.update_status("User stopped transfer early.")
+                            ser.write(b"kill\n")
+                            time.sleep(1)
+                            return
                     else:
                         self.update_status("Attempting to Connect...")
                         ser.write(b"connect\n")

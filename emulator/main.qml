@@ -40,7 +40,7 @@ ApplicationWindow {
                 || stat == "Transfer was stopped early. Awaiting new command..."){
             return "Start Transfer"
         }
-        if (stat == "Connected, transferring....") {
+        if (stat == "Connected, transferring...." || stat == "Transfer Mode Initiated: Transferring...") {
             return "Pause"
         }
 
@@ -253,8 +253,8 @@ ApplicationWindow {
                 left: selectButton.left
             }
             contentItem: Text {
-                anchors.top: parent.verticalCenter
-                anchors.topMargin: 4
+                anchors.top: parent.top
+                anchors.topMargin: 25
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 text: settingsButton.text
@@ -262,8 +262,8 @@ ApplicationWindow {
                 font.pixelSize: 28
             }
             background: Rectangle {
-                width: 185
-                height: 90
+                implicitWidth: 185
+                implicitHeight: 90
                 color: settingsButton.pressed ? "dimgrey" :"#36454F"
                 radius: 8
             }
@@ -282,18 +282,18 @@ ApplicationWindow {
                 
             }
             contentItem: Text {
-                anchors.top: parent.verticalCenter
-                anchors.topMargin: 4
+                anchors.top: parent.top
+                anchors.topMargin: 25
                 anchors.left: parent.left
-                anchors.leftMargin: 45
+                anchors.leftMargin: 10
                 
                 text: selectButton.text
                 color: "oldlace"
                 font.pixelSize: 28
             }
             background: Rectangle {
-                width: 185
-                height: 90
+                implicitWidth: 185
+                implicitHeight: 90
                 color: selectButton.pressed ? "dimgrey" :"#36454F"
                 radius: 8
             }
